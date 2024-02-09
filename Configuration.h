@@ -62,7 +62,7 @@
 // @section info
 
 // Author info of this build printed to the host during boot and M115
-#define STRING_CONFIG_H_AUTHOR "(none, default config)" // Who made the changes.
+#define STRING_CONFIG_H_AUTHOR "(Taeksoon Park, core200 config)" // Who made the changes.
 //#define CUSTOM_VERSION_FILE Version.h // Path from the root directory (no quotes)
 
 /**
@@ -137,7 +137,7 @@
 //#define BLUETOOTH
 
 // Name displayed in the LCD "Ready" message and Info menu
-//#define CUSTOM_MACHINE_NAME "3D Printer"
+#define CUSTOM_MACHINE_NAME "v2121-240209"
 
 // Printer's unique ID, used by some programs to differentiate between machines.
 // Choose your own or use a service like https://www.uuidgenerator.net/version4
@@ -538,7 +538,7 @@
  *   999 : Dummy Table that ALWAYS reads 100°C or the temperature defined below.
  *
  */
-#define TEMP_SENSOR_0 1
+#define TEMP_SENSOR_0 5
 #define TEMP_SENSOR_1 0
 #define TEMP_SENSOR_2 0
 #define TEMP_SENSOR_3 0
@@ -546,12 +546,15 @@
 #define TEMP_SENSOR_5 0
 #define TEMP_SENSOR_6 0
 #define TEMP_SENSOR_7 0
-#define TEMP_SENSOR_BED 0
+#define TEMP_SENSOR_BED 1
 #define TEMP_SENSOR_PROBE 0
-#define TEMP_SENSOR_CHAMBER 0
+#define TEMP_SENSOR_CHAMBER 1
 #define TEMP_SENSOR_COOLER 0
 #define TEMP_SENSOR_BOARD 0
 #define TEMP_SENSOR_REDUNDANT 0
+
+//돼라 쫌 https://github.com/MarlinFirmware/Marlin/issues/10985
+#define TEMP_CHAMBER_PIN 15
 
 // Dummy thermistor constant temperature readings, for use with 998 and 999
 #define DUMMY_THERMISTOR_998_VALUE  25
@@ -669,9 +672,24 @@
     #define DEFAULT_Ki_LIST {   1.08,   1.08 }
     #define DEFAULT_Kd_LIST { 114.00, 114.00 }
   #else
-    #define DEFAULT_Kp  22.20
-    #define DEFAULT_Ki   1.08
-    #define DEFAULT_Kd 114.00
+//24v e3d v6 온도센서 201224; M303 E0 S200 C8
+//abs, 22?도에서 측정 201224; M303 E0 S240 C8
+//	#define DEFAULT_Kp 15.60
+//	#define DEFAULT_Ki 0.97
+//	#define DEFAULT_Kd 62.93
+//내써팝 1번 센서, 실리콘 양말 씌우고 측정했다
+//	#define DEFAULT_Kp 9.01
+//	#define DEFAULT_Ki 0.36
+//	#define DEFAULT_Kd 56.46
+//? 쓰던거
+//	#define DEFAULT_Kp 13.16
+//	#define DEFAULT_Ki 0.71
+//	#define DEFAULT_Kd 60.64
+//revo6 240도, 실내온도 24도
+//https://e3d-online.zendesk.com/hc/en-us/articles/4408957427729-Revo-HotEnd-PID-Tuning-Marlin-Firmware
+	#define DEFAULT_Kp 22.5
+	#define DEFAULT_Ki 4.43
+	#define DEFAULT_Kd 28.5
   #endif
 #endif
 
@@ -736,7 +754,7 @@
  * the issues involved, don't use bed PID until someone else verifies that your hardware works.
  * @section bed temp
  */
-//#define PIDTEMPBED
+#define PIDTEMPBED
 
 //#define BED_LIMIT_SWITCHING
 
@@ -754,11 +772,16 @@
 
   // 120V 250W silicone heater into 4mm borosilicate (MendelMax 1.5+)
   // from FOPDT model - kp=.39 Tp=405 Tdead=66, Tc set to 79.2, aggressive factor of .15 (vs .1, 1, 10)
-  #define DEFAULT_bedKp 10.00
-  #define DEFAULT_bedKi .023
-  #define DEFAULT_bedKd 305.4
+//  #define DEFAULT_bedKp 10.00
+//  #define DEFAULT_bedKi .023
+//  #define DEFAULT_bedKd 305.4
 
   // FIND YOUR OWN: "M303 E-1 C8 S90" to run autotune on the bed at 90 degreesC for 8 cycles.
+//내써팝 12/24v 겸용(480w) http://nasspop.com/product/detail.html?product_no=638&cate_no=201&display_group=1
+//105도 실내온도 24도
+#define DEFAULT_bedKp 49.2
+#define DEFAULT_bedKi 7.32
+#define DEFAULT_bedKd 220.1
 #endif // PIDTEMPBED
 
 //===========================================================================
@@ -812,8 +835,8 @@
   #define PID_FUNCTIONAL_RANGE 10 // If the temperature difference between the target temperature and the actual temperature
                                   // is more than PID_FUNCTIONAL_RANGE then the PID will be shut off and the heater will be set to min/max.
 
-  //#define PID_EDIT_MENU         // Add PID editing to the "Advanced Settings" menu. (~700 bytes of flash)
-  //#define PID_AUTOTUNE_MENU     // Add PID auto-tuning to the "Advanced Settings" menu. (~250 bytes of flash)
+  #define PID_EDIT_MENU         // Add PID editing to the "Advanced Settings" menu. (~700 bytes of flash)
+  #define PID_AUTOTUNE_MENU     // Add PID auto-tuning to the "Advanced Settings" menu. (~250 bytes of flash)
 #endif
 
 // @section safety
@@ -865,7 +888,7 @@
 
 // Enable one of the options below for CoreXY, CoreXZ, or CoreYZ kinematics,
 // either in the usual order or reversed
-//#define COREXY
+#define COREXY
 //#define COREXZ
 //#define COREYZ
 //#define COREYX
@@ -1035,7 +1058,7 @@
 // Almost all printers will be using one per axis. Probes will use one or more of the
 // extra connectors. Leave undefined any used for non-endstop and non-probe purposes.
 #define USE_XMIN_PLUG
-#define USE_YMIN_PLUG
+//#define USE_YMIN_PLUG
 #define USE_ZMIN_PLUG
 //#define USE_IMIN_PLUG
 //#define USE_JMIN_PLUG
@@ -1044,7 +1067,7 @@
 //#define USE_VMIN_PLUG
 //#define USE_WMIN_PLUG
 //#define USE_XMAX_PLUG
-//#define USE_YMAX_PLUG
+#define USE_YMAX_PLUG
 //#define USE_ZMAX_PLUG
 //#define USE_IMAX_PLUG
 //#define USE_JMAX_PLUG
@@ -1170,14 +1193,14 @@
  * Override with M92
  *                                      X, Y, Z [, I [, J [, K...]]], E0 [, E1[, E2...]]
  */
-#define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 400, 500 }
+#define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 400, 93 }
 
 /**
  * Default Max Feed Rate (linear=mm/s, rotational=°/s)
  * Override with M203
  *                                      X, Y, Z [, I [, J [, K...]]], E0 [, E1[, E2...]]
  */
-#define DEFAULT_MAX_FEEDRATE          { 300, 300, 5, 25 }
+#define DEFAULT_MAX_FEEDRATE          { 500, 500, 5, 50 }
 
 //#define LIMITED_MAX_FR_EDITING        // Limit edit via M203 or LCD to DEFAULT_MAX_FEEDRATE * 2
 #if ENABLED(LIMITED_MAX_FR_EDITING)
@@ -1190,7 +1213,7 @@
  * Override with M201
  *                                      X, Y, Z [, I [, J [, K...]]], E0 [, E1[, E2...]]
  */
-#define DEFAULT_MAX_ACCELERATION      { 3000, 3000, 100, 10000 }
+#define DEFAULT_MAX_ACCELERATION      { 9000, 9000, 100, 10000 }
 
 //#define LIMITED_MAX_ACCEL_EDITING     // Limit edit via M201 or LCD to DEFAULT_MAX_ACCELERATION * 2
 #if ENABLED(LIMITED_MAX_ACCEL_EDITING)
@@ -1206,7 +1229,7 @@
  *   M204 T    Travel Acceleration
  */
 #define DEFAULT_ACCELERATION          3000    // X, Y, Z and E acceleration for printing moves
-#define DEFAULT_RETRACT_ACCELERATION  3000    // E acceleration for retracts
+#define DEFAULT_RETRACT_ACCELERATION  300    // E acceleration for retracts
 #define DEFAULT_TRAVEL_ACCELERATION   3000    // X, Y, Z acceleration for travel (non printing) moves
 
 /**
@@ -1333,7 +1356,7 @@
 /**
  * The BLTouch probe uses a Hall effect sensor and emulates a servo.
  */
-//#define BLTOUCH
+#define BLTOUCH
 
 /**
  * MagLev V4 probe by MDD
@@ -1485,7 +1508,7 @@
  *     |    [-]    |
  *     O-- FRONT --+
  */
-#define NOZZLE_TO_PROBE_OFFSET { 10, 10, 0 }
+#define NOZZLE_TO_PROBE_OFFSET { 4.5, -32, -1 }
 
 // Most probes should stay away from the edges of the bed, but
 // with NOZZLE_AS_PROBE this can be negative for a wider probing area.
@@ -1642,7 +1665,15 @@
 // @section motion
 
 // Invert the stepper direction. Change (or reverse the motor connector) if an axis goes the wrong way.
-#define INVERT_X_DIR false
+/*
+ * xy 정좌표 작업
+ * 모터배선: 전부 반대로 e.xyz 흑<->적
+ * xy 배선 맞바꿈: 이해가 안되지만 안바꾸면 모든 조합이 안된다-_-;
+ * endstop: 기존 xy 교환하고, y는 YMax 단자에 꽂음
+ * 크라이브 위우진(https://cafe.naver.com/makingtool/4370) 아니었으면 못할 뻔 했음
+ */
+//이게 core방식의 xy축이 아니고 정말 x모터, y모터를 말하는 거다
+#define INVERT_X_DIR true
 #define INVERT_Y_DIR true
 #define INVERT_Z_DIR false
 //#define INVERT_I_DIR false
@@ -1684,7 +1715,7 @@
 // Direction of endstops when homing; 1=MAX, -1=MIN
 // :[-1,1]
 #define X_HOME_DIR -1
-#define Y_HOME_DIR -1
+#define Y_HOME_DIR 1
 #define Z_HOME_DIR -1
 //#define I_HOME_DIR -1
 //#define J_HOME_DIR -1
@@ -1875,7 +1906,7 @@
  */
 //#define AUTO_BED_LEVELING_3POINT
 //#define AUTO_BED_LEVELING_LINEAR
-//#define AUTO_BED_LEVELING_BILINEAR
+#define AUTO_BED_LEVELING_BILINEAR
 //#define AUTO_BED_LEVELING_UBL
 //#define MESH_BED_LEVELING
 
@@ -1955,7 +1986,7 @@
 #if EITHER(AUTO_BED_LEVELING_LINEAR, AUTO_BED_LEVELING_BILINEAR)
 
   // Set the number of grid points per dimension.
-  #define GRID_MAX_POINTS_X 3
+  #define GRID_MAX_POINTS_X 4
   #define GRID_MAX_POINTS_Y GRID_MAX_POINTS_X
 
   // Probe along the Y axis, advancing X after each column
@@ -2028,7 +2059,7 @@
 #endif
 
 // Add a menu item to move between bed corners for manual bed adjustment
-//#define LCD_BED_TRAMMING
+#define LCD_BED_TRAMMING
 
 #if ENABLED(LCD_BED_TRAMMING)
   #define BED_TRAMMING_INSET_LFRB { 30, 30, 30, 30 } // (mm) Left, Front, Right, Back insets
@@ -2092,7 +2123,7 @@
  * - Allows Z homing only when XY positions are known and trusted.
  * - If stepper drivers sleep, XY homing may be required again before Z homing.
  */
-//#define Z_SAFE_HOMING
+#define Z_SAFE_HOMING
 
 #if ENABLED(Z_SAFE_HOMING)
   #define Z_SAFE_HOMING_X_POINT X_CENTER  // X point for Z homing
@@ -2178,12 +2209,12 @@
  *   M501 - Read settings from EEPROM. (i.e., Throw away unsaved changes)
  *   M502 - Revert settings to "factory" defaults. (Follow with M500 to init the EEPROM.)
  */
-//#define EEPROM_SETTINGS     // Persistent storage with M500 and M501
+#define EEPROM_SETTINGS     // Persistent storage with M500 and M501
 //#define DISABLE_M503        // Saves ~2700 bytes of flash. Disable for release!
 #define EEPROM_CHITCHAT       // Give feedback on EEPROM commands. Disable to save PROGMEM.
 #define EEPROM_BOOT_SILENT    // Keep M503 quiet and only give errors during first load
 #if ENABLED(EEPROM_SETTINGS)
-  //#define EEPROM_AUTO_INIT  // Init EEPROM automatically on any errors.
+  #define EEPROM_AUTO_INIT  // Init EEPROM automatically on any errors.
   //#define EEPROM_INIT_NOW   // Init EEPROM on first boot after a new build.
 #endif
 
@@ -2463,7 +2494,7 @@
  * SD Card support is disabled by default. If your controller has an SD slot,
  * you must uncomment the following option or it won't work.
  */
-//#define SDSUPPORT
+#define SDSUPPORT
 
 /**
  * SD CARD: ENABLE CRC
@@ -2576,7 +2607,7 @@
 //
 // Note: Usually sold with a white PCB.
 //
-//#define REPRAP_DISCOUNT_SMART_CONTROLLER
+#define REPRAP_DISCOUNT_SMART_CONTROLLER
 
 //
 // GT2560 (YHCB2004) LCD Display
